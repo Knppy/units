@@ -36,4 +36,7 @@ enum Quantity: string
     case AbsorbedDose = 'absorbed dose of ionizing radiation';
     case EquivalentDose = 'equivalent dose of ionizing radiation';
     case CatalyticActivity = 'catalytic activity';
+    case Volume = 'volume';
+    case Count = 'count';
+    case ImpreciseAmount = 'imprecise amount';
 }

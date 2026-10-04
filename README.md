@@ -36,15 +36,27 @@ $si->nameFor($kilogram);     // "kilogram"
 $si->quantityFor($kilogram); // "mass"
 ```
 
-Lists implement `Knppy\Units\Contract\UnitOfMeasurements`, so other lists (e.g. cooking) can be added alongside the
-International System of Units.
+Lists implement `Knppy\Units\Contract\UnitOfMeasurements`, so other lists can be added alongside the International
+System of Units. `CookingUnitOfMeasurements` covers cooking: volumes (`tsp`, `tbsp`, `cup`, ...), masses (`oz`, `lb`),
+counts (`clove`, `slice`, ...) and imprecise amounts (`pinch`, `dash`, `handful`, ...).
+
+```php
+use Knppy\Units\UnitOfMeasurements\CookingUnitOfMeasurements;
+
+$cooking = new CookingUnitOfMeasurements();
+$cooking->nameFor(new UnitOfMeasurement('pinch'));    // "pinch"
+$cooking->quantityFor(new UnitOfMeasurement('tsp'));  // "volume"
+```
 
 ## Conversion
 
-All 24 SI prefixes (quecto to quetta) are supported through the `Prefix` enum and the `UnitConverter`:
+Each system of units has its own converter implementing `Knppy\Units\Contract\UnitConverter`. `convertTo()` uses the
+`SIUnitConverter` by default; pass another converter as the second argument.
+
+All 24 SI prefixes (quecto to quetta) are supported through the `Prefix` enum and the `SIUnitConverter`:
 
 ```php
-use Knppy\Units\UnitConverter;
+use Knppy\Units\Converter\SIUnitConverter;
 
 $km = new Unit(5, new UnitOfMeasurement('km'));
 
@@ -53,11 +65,28 @@ $km->convertTo(new UnitOfMeasurement('mm'));  // 5000000 mm
 
 $m = new Unit(1, new UnitOfMeasurement('m'));
 $m->convertTo(new UnitOfMeasurement('km'));   // throws InexactConversionException, 0.001 is not a whole number
-(new UnitConverter)->convertToDecimal($m, new UnitOfMeasurement('km')); // "0.001"
+(new SIUnitConverter)->convertToDecimal($m, new UnitOfMeasurement('km')); // "0.001"
 ```
 
 Amounts are whole numbers, so `convert()` throws when the result would have decimals. Use `convertToDecimal()` for an
 exact decimal string instead. Masses can be prefixed grams (`mg`) even though the SI base unit is the kilogram.
+
+### Cooking
+
+The `CookingUnitConverter` converts volumes and masses using exact US customary ratios:
+
+```php
+use Knppy\Units\Converter\CookingUnitConverter;
+
+$cooking = new CookingUnitConverter();
+
+(new Unit(1, new UnitOfMeasurement('tbsp')))->convertTo(new UnitOfMeasurement('tsp'), $cooking); // 3 tsp
+(new Unit(1, new UnitOfMeasurement('lb')))->convertTo(new UnitOfMeasurement('oz'), $cooking);    // 16 oz
+$cooking->convertToDecimal(new Unit(1, new UnitOfMeasurement('oz')), new UnitOfMeasurement('g')); // "28.349523125"
+```
+
+Units without a fixed size, such as a `pinch` or a `clove`, cannot be converted to another unit and throw an
+`IncompatibleUnitOfMeasurementException`.
 
 ## Changelog
 

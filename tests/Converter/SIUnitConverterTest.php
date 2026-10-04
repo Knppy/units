@@ -1,19 +1,19 @@
 <?php
 
+use Knppy\Units\Converter\SIUnitConverter;
 use Knppy\Units\Exception\IncompatibleUnitOfMeasurementException;
 use Knppy\Units\Exception\InexactConversionException;
 use Knppy\Units\Exception\UnknownUnitOfMeasurementException;
 use Knppy\Units\Unit;
-use Knppy\Units\UnitConverter;
 use Knppy\Units\UnitOfMeasurement;
 
-function convertTo(string $amount, string $from, string $to): string
+function convertSI(string $amount, string $from, string $to): string
 {
-    return (new UnitConverter)->convert(new Unit($amount, new UnitOfMeasurement($from)), new UnitOfMeasurement($to))->getAmount();
+    return (new SIUnitConverter)->convert(new Unit($amount, new UnitOfMeasurement($from)), new UnitOfMeasurement($to))->getAmount();
 }
 
 it('converts to a whole number', function (string $amount, string $from, string $to, string $expected) {
-    expect(convertTo($amount, $from, $to))->toBe($expected);
+    expect(convertSI($amount, $from, $to))->toBe($expected);
 })->with([
     ['1', 'km', 'm', '1000'],
     ['5000', 'mm', 'm', '5'],
@@ -35,7 +35,7 @@ it('converts to a whole number', function (string $amount, string $from, string 
 it('converts to an exact decimal', function (string $amount, string $from, string $to, string $expected) {
     $unit = new Unit($amount, new UnitOfMeasurement($from));
 
-    expect((new UnitConverter)->convertToDecimal($unit, new UnitOfMeasurement($to)))->toBe($expected);
+    expect((new SIUnitConverter)->convertToDecimal($unit, new UnitOfMeasurement($to)))->toBe($expected);
 })->with([
     ['1', 'm', 'km', '0.001'],
     ['1', 'g', 'kg', '0.001'],
@@ -46,19 +46,19 @@ it('converts to an exact decimal', function (string $amount, string $from, strin
 ]);
 
 it('throws when the result is not a whole number', function () {
-    convertTo('1', 'm', 'km');
+    convertSI('1', 'm', 'km');
 })->throws(InexactConversionException::class);
 
 it('throws for different base units', function () {
-    convertTo('1', 'm', 's');
+    convertSI('1', 'm', 's');
 })->throws(IncompatibleUnitOfMeasurementException::class);
 
 it('throws for unknown units', function (string $symbol) {
-    convertTo('1', $symbol, 'm');
+    convertSI('1', $symbol, 'm');
 })->with(['foo', 'k', 'm°C', 'mkg', 'x'])->throws(UnknownUnitOfMeasurementException::class);
 
 it('does not read the metre as milli', function () {
-    expect(convertTo('1', 'm', 'm'))->toBe('1');
+    expect(convertSI('1', 'm', 'm'))->toBe('1');
 });
 
 it('converts through the unit', function () {

@@ -3,6 +3,8 @@
 namespace Knppy\Units;
 
 use JsonSerializable;
+use Knppy\Units\Contract\UnitConverter;
+use Knppy\Units\Converter\SIUnitConverter;
 use Knppy\Units\Exception\InvalidAmountException;
 
 /**
@@ -49,15 +51,17 @@ final class Unit implements JsonSerializable
     }
 
     /**
-     * Converts to another prefix of the same base unit, e.g. kilometres to metres.
+     * Converts to another unit of measurement, e.g. kilometres to metres.
+     *
+     * @param  UnitConverter|null  $converter  Defaults to {@see SIUnitConverter}.
      *
      * @throws Exception\IncompatibleUnitOfMeasurementException
      * @throws Exception\InexactConversionException
      * @throws Exception\UnknownUnitOfMeasurementException
      */
-    public function convertTo(UnitOfMeasurement $to): self
+    public function convertTo(UnitOfMeasurement $to, ?UnitConverter $converter = null): self
     {
-        return (new UnitConverter)->convert($this, $to);
+        return ($converter ?? new SIUnitConverter)->convert($this, $to);
     }
 
     /**

@@ -1,17 +1,19 @@
 <?php
 
-namespace Knppy\Units;
+namespace Knppy\Units\Converter;
 
 use Knppy\Units\Contract\UnitOfMeasurements;
 use Knppy\Units\Exception\IncompatibleUnitOfMeasurementException;
-use Knppy\Units\Exception\InexactConversionException;
 use Knppy\Units\Exception\UnknownUnitOfMeasurementException;
+use Knppy\Units\Prefix;
+use Knppy\Units\Unit;
+use Knppy\Units\UnitOfMeasurement;
 use Knppy\Units\UnitOfMeasurements\SIUnitOfMeasurements;
 
 /**
  * Converts units between metric prefixes, e.g. kilometres to metres.
  */
-final class UnitConverter
+final class SIUnitConverter extends AbstractUnitConverter
 {
     /**
      * The kilogram is the SI base unit of mass, yet the gram is what gets prefixed.
@@ -33,30 +35,7 @@ final class UnitConverter
     }
 
     /**
-     * Converts a unit to another prefix of the same base unit.
-     *
-     * @throws IncompatibleUnitOfMeasurementException
-     * @throws UnknownUnitOfMeasurementException
-     * @throws InexactConversionException When the result is not a whole number, see convertToDecimal().
-     */
-    public function convert(Unit $unit, UnitOfMeasurement $to): Unit
-    {
-        $amount = $this->convertToDecimal($unit, $to);
-
-        if (str_contains($amount, '.')) {
-            throw new InexactConversionException(
-                'Converting '.$unit->getAmount().' '.$unit->getUnitOfMeasurement().' to '.$to.' gives '.$amount.', which is not a whole number.'
-            );
-        }
-
-        return new Unit($amount, $to);
-    }
-
-    /**
-     * Converts the amount of a unit to another prefix of the same base unit, as an exact decimal string.
-     *
-     * @throws IncompatibleUnitOfMeasurementException
-     * @throws UnknownUnitOfMeasurementException
+     * {@inheritDoc}
      */
     public function convertToDecimal(Unit $unit, UnitOfMeasurement $to): string
     {
