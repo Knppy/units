@@ -1,4 +1,5 @@
-name: dependabot-auto-merge
+name: Dependabot Auto Merge
+
 on: pull_request_target
 
 permissions:
@@ -8,13 +9,12 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == ':vendor_slug/:package_slug' }}
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'knppy/ui' }}
     steps:
 
       - name: Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v3.1.0
+        uses: dependabot/fetch-metadata@v3
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
