@@ -16,7 +16,9 @@
     ],
     "require": {
         "php": "^8.4",
-        "ext-bcmath": "*"
+        "ext-bcmath": "*",
+        "ext-intl": "*",
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "pestphp/pest": "^4.0",

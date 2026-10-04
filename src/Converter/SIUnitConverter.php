@@ -25,7 +25,7 @@ final class SIUnitConverter extends AbstractUnitConverter
     /**
      * Units that cannot take a prefix.
      */
-    private const array NOT_PREFIXABLE = ['°C', self::KILOGRAM];
+    public const array NOT_PREFIXABLE = ['°C', self::KILOGRAM];
 
     private readonly UnitOfMeasurements $unitOfMeasurements;
 

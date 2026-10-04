@@ -88,6 +88,59 @@ $cooking->convertToDecimal(new Unit(1, new UnitOfMeasurement('oz')), new UnitOfM
 Units without a fixed size, such as a `pinch` or a `clove`, cannot be converted to another unit and throw an
 `IncompatibleUnitOfMeasurementException`.
 
+## Languages
+
+Unit names can be localized and localized input can be parsed back to a unit. The symbol stays the canonical identifier, so conversion and `equals` are unaffected.
+
+```php
+use Knppy\Units\UnitNames\CookingUnitNames;
+use Knppy\Units\UnitOfMeasurement;
+
+$names = new CookingUnitNames;
+
+$names->nameFor(new UnitOfMeasurement('tsp'), 'nl');              // theelepel
+$names->nameFor(new UnitOfMeasurement('tsp'), 'nl', 2);            // theelepels
+$names->parse('Theelepels', 'nl');                                // UnitOfMeasurement('tsp')
+$names->parse('tl', 'nl');                                        // UnitOfMeasurement('tsp')
+```
+
+The count picks the plural form by the CLDR rules of the locale (via `ext-intl`), so languages with more than two forms work. Pass a unit's amount directly:
+
+```php
+$names->nameFor(new UnitOfMeasurement('tsp'), 'ru', 1);   // чайная ложка
+$names->nameFor(new UnitOfMeasurement('tsp'), 'ru', 22);  // чайные ложки
+$names->nameFor(new UnitOfMeasurement('tsp'), 'ru', 5);   // чайных ложек
+$names->nameFor($unit->getUnitOfMeasurement(), 'ar', $unit->getAmount());
+```
+
+Symbols are matched first (case-sensitive), then names, plurals and aliases (case-insensitive). Unsupported locales and missing units fall back to English. `SIUnitNames` does the same for SI units.
+
+Available locales: `en`, `nl`, `de`, `fr`, `es`, `pt`, `zh`, `ja`, `ru`, `hi`, `ar`. Quantity labels are not localized yet. Requires `ext-intl` and `ext-mbstring`.
+
+### Prefixes
+
+`SIUnitNames` also names and parses prefixed units, composing them from the prefix and the unit name:
+
+```php
+use Knppy\Units\Prefix;
+use Knppy\Units\UnitNames\PrefixNames;
+use Knppy\Units\UnitNames\SIUnitNames;
+
+$si = new SIUnitNames;
+
+$si->nameFor(new UnitOfMeasurement('cm'), 'de');  // Zentimeter
+$si->nameFor(new UnitOfMeasurement('km'), 'es');  // kilómetro
+$si->parse('milligramm', 'de');                   // UnitOfMeasurement('mg')
+$si->parse('千米', 'zh');                          // UnitOfMeasurement('km')
+
+(new PrefixNames)->nameFor(Prefix::Centi, 'de');  // zenti
+(new PrefixNames)->parse('Zenti', 'de');          // Prefix::Centi
+```
+
+Parsing ignores case and common Latin accents (`kilometro` matches `kilómetro`). Units that cannot take a prefix (`kg`, `°C`) are rejected, as in `SIUnitConverter`.
+
+Spelling that cannot be composed is data, not code. A locale can list prefixed names in `si-prefixed.php` (Spanish and Portuguese do this for the stress shift in `kilómetro`), or give a unit a `prefixed` entry with its own forms and a `separator` (Arabic does this for `ميلي ثانية`). Region tags work too: `pt` is Brazilian (`quilômetro`) and `pt-PT` is European (`quilómetro`).
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
