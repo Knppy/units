@@ -20,6 +20,25 @@ You can install the package via Composer:
 composer require knppy/units
 ```
 
+## Usage
+
+```php
+use Knppy\Units\Unit;
+use Knppy\Units\UnitOfMeasurement;
+use Knppy\Units\UnitOfMeasurements\SIUnitOfMeasurements;
+
+$kilogram = new UnitOfMeasurement('kg');
+$weight = new Unit(100, $kilogram);
+
+$si = new SIUnitOfMeasurements();
+$si->contains($kilogram);    // true
+$si->nameFor($kilogram);     // "kilogram"
+$si->quantityFor($kilogram); // "mass"
+```
+
+Lists implement `Knppy\Units\Contract\UnitOfMeasurements`, so other lists (e.g. cooking) can be added alongside the
+International System of Units.
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
