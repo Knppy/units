@@ -39,6 +39,26 @@ $si->quantityFor($kilogram); // "mass"
 Lists implement `Knppy\Units\Contract\UnitOfMeasurements`, so other lists (e.g. cooking) can be added alongside the
 International System of Units.
 
+## Conversion
+
+All 24 SI prefixes (quecto to quetta) are supported through the `Prefix` enum and the `UnitConverter`:
+
+```php
+use Knppy\Units\UnitConverter;
+
+$km = new Unit(5, new UnitOfMeasurement('km'));
+
+$km->convertTo(new UnitOfMeasurement('m'));   // 5000 m
+$km->convertTo(new UnitOfMeasurement('mm'));  // 5000000 mm
+
+$m = new Unit(1, new UnitOfMeasurement('m'));
+$m->convertTo(new UnitOfMeasurement('km'));   // throws InexactConversionException, 0.001 is not a whole number
+(new UnitConverter)->convertToDecimal($m, new UnitOfMeasurement('km')); // "0.001"
+```
+
+Amounts are whole numbers, so `convert()` throws when the result would have decimals. Use `convertToDecimal()` for an
+exact decimal string instead. Masses can be prefixed grams (`mg`) even though the SI base unit is the kilogram.
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

@@ -49,6 +49,18 @@ final class Unit implements JsonSerializable
     }
 
     /**
+     * Converts to another prefix of the same base unit, e.g. kilometres to metres.
+     *
+     * @throws Exception\IncompatibleUnitOfMeasurementException
+     * @throws Exception\InexactConversionException
+     * @throws Exception\UnknownUnitOfMeasurementException
+     */
+    public function convertTo(UnitOfMeasurement $to): self
+    {
+        return (new UnitConverter)->convert($this, $to);
+    }
+
+    /**
      * Serializes to an array holding the amount and the unit symbol.
      *
      * @return array{amount: string, unit: string}
