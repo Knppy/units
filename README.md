@@ -165,6 +165,32 @@ $parser->parse('2 theelepels'); // the first parser that succeeds wins
 
 `SymbolUnitParser` accepts any symbol, so put it last in an `AggregateUnitParser`.
 
+## Formatting
+
+Formatters turn a `Unit` into a string and implement `Knppy\Units\Contract\UnitFormatter`, the counterpart of the parsers.
+
+```php
+use Knppy\Units\Formatter\AggregateUnitFormatter;
+use Knppy\Units\Formatter\DecimalUnitFormatter;
+use Knppy\Units\Formatter\LocalizedUnitFormatter;
+use Knppy\Units\Formatter\SymbolUnitFormatter;
+
+$unit = new Unit(1500, new UnitOfMeasurement('tsp'));
+
+(new DecimalUnitFormatter)->format($unit);                                   // "1500"
+(new SymbolUnitFormatter)->format($unit);                                    // "1500 tsp"
+(new LocalizedUnitFormatter(new CookingUnitNames, 'nl'))->format($unit);     // "1.500 theelepels"
+(new LocalizedUnitFormatter(new CookingUnitNames, 'nl', useName: false))->format($unit); // "1.500 tsp"
+
+$formatter = new AggregateUnitFormatter(
+    ['tsp' => new LocalizedUnitFormatter(new CookingUnitNames, 'nl')],
+    new SymbolUnitFormatter, // default for other symbols, otherwise a FormatterException is thrown
+);
+```
+
+`LocalizedUnitFormatter` picks the plural form from the amount and groups digits as the locale does (pass `grouping: false` to
+get output `LocalizedUnitParser` can read back). Amounts beyond the integer range keep every digit.
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
