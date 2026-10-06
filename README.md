@@ -141,6 +141,30 @@ Parsing ignores case and common Latin accents (`kilometro` matches `kilómetro`)
 
 Spelling that cannot be composed is data, not code. A locale can list prefixed names in `si-prefixed.php` (Spanish and Portuguese do this for the stress shift in `kilómetro`), or give a unit a `prefixed` entry with its own forms and a `separator` (Arabic does this for `ميلي ثانية`). Region tags work too: `pt` is Brazilian (`quilômetro`) and `pt-PT` is European (`quilómetro`).
 
+## Parsing
+
+Parsers turn a string into a `Unit` and implement `Knppy\Units\Contract\UnitParser`. They throw a `ParserException`
+when the input is not a whole amount with a unit of measurement.
+
+```php
+use Knppy\Units\Parser\AggregateUnitParser;
+use Knppy\Units\Parser\LocalizedUnitParser;
+use Knppy\Units\Parser\SymbolUnitParser;
+use Knppy\Units\UnitNames\CookingUnitNames;
+
+(new SymbolUnitParser)->parse('5 kg');                                      // Unit(5, kg)
+(new SymbolUnitParser)->parse('5', new UnitOfMeasurement('m'));             // Unit(5, m), the fallback fills a missing unit
+(new LocalizedUnitParser(new CookingUnitNames, 'nl'))->parse('2 theelepels'); // Unit(2, tsp)
+
+$parser = new AggregateUnitParser([
+    new LocalizedUnitParser(new CookingUnitNames, 'nl'),
+    new SymbolUnitParser,
+]);
+$parser->parse('2 theelepels'); // the first parser that succeeds wins
+```
+
+`SymbolUnitParser` accepts any symbol, so put it last in an `AggregateUnitParser`.
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
