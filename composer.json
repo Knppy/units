@@ -22,8 +22,7 @@
     },
     "require-dev": {
         "pestphp/pest": "^5.3",
-        "laravel/pint": "^1.19",
-        "spatie/ray": "^1.28"
+        "laravel/pint": "^1.19"
     },
     "autoload": {
         "psr-4": {
@@ -48,6 +47,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
