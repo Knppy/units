@@ -133,7 +133,7 @@ final class Unit implements JsonSerializable
      *
      * @param  UnitConverter|null  $converter  Defaults to {@see SIUnitConverter}.
      *
-     * @throws Exception\IncompatibleUnitOfMeasurementException
+     * @throws IncompatibleUnitOfMeasurementException
      * @throws Exception\InexactConversionException
      * @throws Exception\UnknownUnitOfMeasurementException
      */
