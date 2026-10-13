@@ -21,7 +21,7 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "pestphp/pest": "^4.0",
+        "pestphp/pest": "^5.3",
         "laravel/pint": "^1.19",
         "spatie/ray": "^1.28"
     },
