@@ -95,26 +95,30 @@ final class SIUnitConverter extends AbstractUnitConverter
     }
 
     /**
-     * Multiplies an integer string by 10^$exponent by moving the decimal point, so no precision is lost.
+     * Multiplies a numeric string by 10^$exponent by moving the decimal point, so no precision is lost.
      */
     private function shift(string $amount, int $exponent): string
     {
         $negative = str_starts_with($amount, '-');
-        $digits = ltrim($negative ? substr($amount, 1) : $amount, '0');
+        [$whole, $fraction] = array_pad(explode('.', ltrim($amount, '-'), 2), 2, '');
 
-        if ($digits === '') {
+        $digits = $whole.$fraction;
+        $point = strlen($whole) + $exponent;
+
+        if ($point <= 0) {
+            $digits = str_repeat('0', 1 - $point).$digits;
+            $point = 1;
+        } elseif ($point > strlen($digits)) {
+            $digits = str_pad($digits, $point, '0');
+        }
+
+        $integer = ltrim(substr($digits, 0, $point), '0');
+        $decimals = rtrim(substr($digits, $point), '0');
+
+        if ($integer === '' && $decimals === '') {
             return '0';
         }
 
-        if ($exponent >= 0) {
-            $result = $digits.str_repeat('0', $exponent);
-        } else {
-            $places = -$exponent;
-            $digits = str_pad($digits, $places + 1, '0', STR_PAD_LEFT);
-            $fraction = rtrim(substr($digits, -$places), '0');
-            $result = substr($digits, 0, -$places).($fraction === '' ? '' : '.'.$fraction);
-        }
-
-        return ($negative ? '-' : '').$result;
+        return ($negative ? '-' : '').($integer === '' ? '0' : $integer).($decimals === '' ? '' : '.'.$decimals);
     }
 }

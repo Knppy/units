@@ -49,6 +49,17 @@ final class LocalizedUnitFormatter implements UnitFormatter
 
     private function formatAmount(string $amount): string
     {
+        if (str_contains($amount, '.')) {
+            [$whole, $fraction] = explode('.', $amount, 2);
+
+            return $this->formatWhole($whole).$this->numberFormatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL).$fraction;
+        }
+
+        return $this->formatWhole($amount);
+    }
+
+    private function formatWhole(string $amount): string
+    {
         if ($amount === (string) (int) $amount) {
             return (string) $this->numberFormatter->format((int) $amount);
         }

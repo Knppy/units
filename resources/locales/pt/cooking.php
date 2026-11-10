@@ -39,4 +39,10 @@ return [
     'package' => ['one' => 'pacote', 'other' => 'pacotes', 'aliases' => ['embalagem', 'embalagens']],
     'bunch' => ['one' => 'maço', 'other' => 'maços'],
     'sprig' => ['one' => 'ramo', 'other' => 'ramos', 'aliases' => ['raminho', 'raminhos']],
+
+    // Added with the metric kitchen
+    'kg' => ['one' => 'quilograma', 'other' => 'quilogramas', 'aliases' => ['quilo', 'quilos']],
+    'dl' => ['one' => 'decilitro', 'other' => 'decilitros'],
+    'cm' => ['one' => 'centímetro', 'other' => 'centímetros'],
+    'to taste' => ['one' => 'a gosto', 'other' => 'a gosto'],
 ];

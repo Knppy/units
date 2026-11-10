@@ -39,4 +39,10 @@ return [
     'package' => ['one' => 'pakje', 'other' => 'pakjes', 'aliases' => ['pak', 'pakken', 'verpakking']],
     'bunch' => ['one' => 'bos', 'other' => 'bossen', 'aliases' => ['bosje', 'bosjes']],
     'sprig' => ['one' => 'takje', 'other' => 'takjes', 'aliases' => ['tak', 'takken']],
+
+    // Added with the metric kitchen
+    'kg' => ['one' => 'kilogram', 'other' => 'kilogrammen', 'aliases' => ['kilo']],
+    'dl' => ['one' => 'deciliter', 'other' => 'deciliters'],
+    'cm' => ['one' => 'centimeter', 'other' => 'centimeters'],
+    'to taste' => ['one' => 'naar smaak', 'other' => 'naar smaak'],
 ];

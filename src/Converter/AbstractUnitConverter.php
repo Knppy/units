@@ -19,12 +19,15 @@ abstract class AbstractUnitConverter implements UnitConverter
     {
         $amount = $this->convertToDecimal($unit, $to);
 
-        if (str_contains($amount, '.')) {
+        $scale = $unit->getScale();
+        $decimals = str_contains($amount, '.') ? strlen(substr($amount, (int) strpos($amount, '.') + 1)) : 0;
+
+        if ($decimals > $scale) {
             throw new InexactConversionException(
-                'Converting '.$unit->getAmount().' '.$unit->getUnitOfMeasurement().' to '.$to.' gives '.$amount.', which is not a whole number.'
+                'Converting '.$unit->getAmount().' '.$unit->getUnitOfMeasurement().' to '.$to.' gives '.$amount.', which has more than '.$scale.' decimals.'
             );
         }
 
-        return new Unit($amount, $to);
+        return new Unit($amount, $to, $scale);
     }
 }

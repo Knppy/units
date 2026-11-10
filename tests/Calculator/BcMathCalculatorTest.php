@@ -84,3 +84,8 @@ it('shares', function () {
 it('calculates the modulus', function (string $a, string $b, string $expected) {
     expect(BcMathCalculator::mod($a, $b))->toBe($expected);
 })->with([['10', '3', '1'], ['10', '5', '0'], ['5.5', '2', '1.5']]);
+
+it('rounds to a precision', function () {
+    expect(BcMathCalculator::round('1.2345', PHP_ROUND_HALF_UP, 2))->toBe('1.23')
+        ->and(BcMathCalculator::round('1.235', PHP_ROUND_HALF_UP, 2))->toBe('1.24');
+});

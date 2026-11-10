@@ -53,9 +53,9 @@ interface Calculator
     public static function absolute(string $number): string;
 
     /**
-     * Round number, use rounding mode for tie-breaker.
+     * Round number to a number of decimals, use rounding mode for tie-breaker.
      */
-    public static function round(string $number, int $roundingMode): string;
+    public static function round(string $number, int $roundingMode, int $precision = 0): string;
 
     /**
      * Share amount among ratio / total portions.

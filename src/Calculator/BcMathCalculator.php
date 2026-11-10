@@ -81,7 +81,7 @@ class BcMathCalculator implements Calculator
     /**
      * {@inheritDoc}
      */
-    public static function round(string $number, int $roundingMode): string
+    public static function round(string $number, int $roundingMode, int $precision = 0): string
     {
         $mode = match ($roundingMode) {
             PHP_ROUND_HALF_UP => RoundingMode::HalfAwayFromZero,
@@ -91,7 +91,7 @@ class BcMathCalculator implements Calculator
             default => throw new InvalidArgumentException("Unknown rounding mode: $roundingMode"),
         };
 
-        return self::trim(bcround($number, 0, $mode));
+        return self::trim(bcround($number, $precision, $mode));
     }
 
     /**

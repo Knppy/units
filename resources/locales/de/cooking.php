@@ -39,4 +39,10 @@ return [
     'package' => ['one' => 'Packung', 'other' => 'Packungen', 'aliases' => ['Päckchen', 'Pckg']],
     'bunch' => ['one' => 'Bund', 'other' => 'Bunde'],
     'sprig' => ['one' => 'Zweig', 'other' => 'Zweige'],
+
+    // Added with the metric kitchen
+    'kg' => ['one' => 'Kilogramm', 'other' => 'Kilogramm', 'aliases' => ['kilo']],
+    'dl' => ['one' => 'Deziliter', 'other' => 'Deziliter'],
+    'cm' => ['one' => 'Zentimeter', 'other' => 'Zentimeter'],
+    'to taste' => ['one' => 'nach Geschmack', 'other' => 'nach Geschmack'],
 ];

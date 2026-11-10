@@ -39,4 +39,10 @@ return [
     'package' => ['one' => '包', 'other' => '包', 'aliases' => ['袋']],
     'bunch' => ['one' => '束', 'other' => '束'],
     'sprig' => ['one' => '枝', 'other' => '枝', 'aliases' => ['小枝']],
+
+    // Added with the metric kitchen
+    'kg' => ['one' => '千克', 'other' => '千克', 'aliases' => ['公斤']],
+    'dl' => ['one' => '分升', 'other' => '分升'],
+    'cm' => ['one' => '厘米', 'other' => '厘米'],
+    'to taste' => ['one' => '随口味', 'other' => '随口味', 'aliases' => ['按口味']],
 ];

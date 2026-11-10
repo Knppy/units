@@ -39,4 +39,10 @@ return [
     'package' => ['one' => 'पैकेट', 'other' => 'पैकेट'],
     'bunch' => ['one' => 'गुच्छा', 'other' => 'गुच्छे'],
     'sprig' => ['one' => 'टहनी', 'other' => 'टहनियाँ'],
+
+    // Added with the metric kitchen
+    'kg' => ['one' => 'किलोग्राम', 'other' => 'किलोग्राम', 'aliases' => ['किलो']],
+    'dl' => ['one' => 'डेसीलीटर', 'other' => 'डेसीलीटर'],
+    'cm' => ['one' => 'सेंटीमीटर', 'other' => 'सेंटीमीटर'],
+    'to taste' => ['one' => 'स्वादानुसार', 'other' => 'स्वादानुसार'],
 ];
