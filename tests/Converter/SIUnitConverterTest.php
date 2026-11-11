@@ -67,3 +67,20 @@ it('converts through the unit', function () {
     expect($unit->getAmount())->toBe('5000')
         ->and($unit->getUnitOfMeasurement()->getSymbol())->toBe('m');
 });
+
+it('converts decimal amounts', function (string $amount, int $scale, string $from, string $to, string $expected) {
+    $unit = new Unit($amount, new UnitOfMeasurement($from), $scale);
+
+    expect((new SIUnitConverter)->convert($unit, new UnitOfMeasurement($to))->getAmount())->toBe($expected);
+})->with([
+    ['1.5', 1, 'km', 'm', '1500'],
+    ['1500', 3, 'm', 'km', '1.5'],
+    ['0.25', 2, 'kg', 'g', '250'],
+    ['-0.5', 1, 'km', 'm', '-500'],
+    ['0.0', 1, 'km', 'm', '0'],
+    ['2.5', 1, 'cm', 'mm', '25'],
+]);
+
+it('throws when the result has more decimals than the scale', function () {
+    (new SIUnitConverter)->convert(new Unit('1.5', new UnitOfMeasurement('m'), 1), new UnitOfMeasurement('km'));
+})->throws(InexactConversionException::class);

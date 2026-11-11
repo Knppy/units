@@ -81,3 +81,14 @@ it('formats with the formatter registered for the symbol', function () {
 it('throws when no formatter is registered for the symbol', function () {
     (new AggregateUnitFormatter(['tsp' => new DecimalUnitFormatter]))->format(new Unit(2, new UnitOfMeasurement('kg')));
 })->throws(FormatterException::class);
+
+it('formats decimals with the decimal separator of the locale', function (string $amount, string $locale, string $expected) {
+    $formatter = new LocalizedUnitFormatter(new CookingUnitNames, $locale);
+
+    expect($formatter->format(new Unit($amount, new UnitOfMeasurement('tbsp'), 2)))->toBe($expected);
+})->with([
+    ['1.5', 'nl', '1,5 eetlepels'],
+    ['1.5', 'en', '1.5 tablespoons'],
+    ['-0.25', 'nl', '-0,25 eetlepels'],
+    ['1500.5', 'nl', '1.500,5 eetlepels'],
+]);

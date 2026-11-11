@@ -44,7 +44,7 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
 
       - name: Linter
-        run: composer lint:check
+        run: vendor/bin/pint --test --format json
 
       - name: Test Suite
         run: composer test:unit

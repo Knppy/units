@@ -6,6 +6,7 @@ use Knppy\Units\Exception\InexactConversionException;
 use Knppy\Units\Exception\UnknownUnitOfMeasurementException;
 use Knppy\Units\Unit;
 use Knppy\Units\UnitOfMeasurement;
+use Knppy\Units\UnitOfMeasurements\MetricCookingUnitOfMeasurements;
 
 function convertCooking(string $amount, string $from, string $to): string
 {
@@ -61,4 +62,15 @@ it('converts through the unit with the cooking converter', function () {
 
     expect($unit->getAmount())->toBe('3')
         ->and($unit->getUnitOfMeasurement()->getSymbol())->toBe('tsp');
+});
+
+it('converts with metric spoons and decimals', function () {
+    $converter = new CookingUnitConverter(new MetricCookingUnitOfMeasurements);
+
+    $tbsp = new Unit('1.5', new UnitOfMeasurement('tbsp'), 2);
+
+    expect($converter->convert($tbsp, new UnitOfMeasurement('ml'))->getAmount())->toBe('22.5')
+        ->and($converter->convert($tbsp, new UnitOfMeasurement('tsp'))->getAmount())->toBe('4.5')
+        ->and($converter->convertToDecimal(new Unit(2, new UnitOfMeasurement('dl')), new UnitOfMeasurement('l')))->toBe('0.2')
+        ->and($converter->convertToDecimal(new Unit('1.5', new UnitOfMeasurement('kg'), 1), new UnitOfMeasurement('g')))->toBe('1500');
 });

@@ -77,3 +77,28 @@ it('uses the registered calculator', function () {
 it('rejects calculators that do not implement the contract', function () {
     Unit::registerCalculator(stdClass::class);
 })->throws(InvalidArgumentException::class);
+
+it('keeps decimals up to its scale', function () {
+    $kg = new UnitOfMeasurement('kg');
+
+    expect((new Unit('1.50', $kg, 2))->getAmount())->toBe('1.50')
+        ->and((new Unit(2, $kg, 2))->getScale())->toBe(2)
+        ->and((new Unit('1.5', $kg, 2))->add(new Unit('2.25', $kg, 2))->getAmount())->toBe('3.75')
+        ->and((new Unit('1.5', $kg, 1))->add(new Unit('2.25', $kg, 2))->getScale())->toBe(2)
+        ->and((new Unit('3.75', $kg, 2))->subtract(new Unit('1.5', $kg, 1))->getAmount())->toBe('2.25')
+        ->and((new Unit('2.5', $kg, 2))->absolute()->getScale())->toBe(2)
+        ->and((new Unit('2.5', $kg, 2))->negative()->getAmount())->toBe('-2.5')
+        ->and((new Unit('7.5', $kg, 2))->mod(new Unit('2', $kg))->getAmount())->toBe('1.5');
+});
+
+it('rounds multiplication and division to its scale', function () {
+    $kg = new UnitOfMeasurement('kg');
+
+    expect((new Unit('1.25', $kg, 2))->multiply('1.5')->getAmount())->toBe('1.88')
+        ->and((new Unit('10', $kg, 2))->divide(3)->getAmount())->toBe('3.33')
+        ->and((new Unit('1.2', $kg, 1))->multiply(2)->getScale())->toBe(1);
+});
+
+it('rejects amounts with more decimals than the scale, and negative scales', function (string $amount, int $scale) {
+    new Unit($amount, new UnitOfMeasurement('kg'), $scale);
+})->with([['1.234', 2], ['1.', 2], ['1.5', 0], ['5', -1]])->throws(InvalidAmountException::class);

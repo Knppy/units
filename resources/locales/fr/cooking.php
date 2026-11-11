@@ -39,4 +39,10 @@ return [
     'package' => ['one' => 'paquet', 'other' => 'paquets', 'aliases' => ['sachet', 'sachets']],
     'bunch' => ['one' => 'botte', 'other' => 'bottes', 'aliases' => ['bouquet', 'bouquets']],
     'sprig' => ['one' => 'brin', 'other' => 'brins', 'aliases' => ['branche', 'branches']],
+
+    // Added with the metric kitchen
+    'kg' => ['one' => 'kilogramme', 'other' => 'kilogrammes', 'aliases' => ['kilo', 'kilos']],
+    'dl' => ['one' => 'décilitre', 'other' => 'décilitres'],
+    'cm' => ['one' => 'centimètre', 'other' => 'centimètres'],
+    'to taste' => ['one' => 'selon le goût', 'other' => 'selon le goût'],
 ];

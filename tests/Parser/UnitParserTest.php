@@ -21,6 +21,19 @@ it('parses an amount and a symbol', function (string $input, string $amount, str
     ['20 °C', '20', '°C'],
 ]);
 
+it('parses decimals and sets the scale', function () {
+    $unit = (new SymbolUnitParser)->parse('1.50 l');
+
+    expect($unit->getAmount())->toBe('1.50')
+        ->and($unit->getScale())->toBe(2)
+        ->and((new LocalizedUnitParser(new CookingUnitNames, 'nl'))->parse('1,5 el')->getAmount())->toBe('1.5')
+        ->and((new LocalizedUnitParser(new CookingUnitNames, 'en'))->parse('1.5 tbsp')->getScale())->toBe(1);
+});
+
+it('rejects the decimal separator of another locale', function (string $locale, string $input) {
+    (new LocalizedUnitParser(new CookingUnitNames, $locale))->parse($input);
+})->with([['nl', '1.5 el'], ['en', '1,5 tbsp']])->throws(ParserException::class);
+
 it('uses the fallback unit of measurement when there is none', function () {
     $unit = (new SymbolUnitParser)->parse('5', new UnitOfMeasurement('m'));
 
@@ -29,7 +42,7 @@ it('uses the fallback unit of measurement when there is none', function () {
 
 it('rejects input without a unit of measurement or amount', function (string $input) {
     (new SymbolUnitParser)->parse($input);
-})->with(['5', '', 'kg', '1.5 kg'])->throws(ParserException::class);
+})->with(['5', '', 'kg', '1,5 kg', '1.5.5 kg'])->throws(ParserException::class);
 
 it('parses localized names', function () {
     $parser = new LocalizedUnitParser(new CookingUnitNames, 'nl');

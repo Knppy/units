@@ -39,4 +39,10 @@ return [
     'package' => ['one' => 'パック', 'other' => 'パック', 'aliases' => ['袋']],
     'bunch' => ['one' => '束', 'other' => '束'],
     'sprig' => ['one' => '枝', 'other' => '枝'],
+
+    // Added with the metric kitchen
+    'kg' => ['one' => 'キログラム', 'other' => 'キログラム', 'aliases' => ['キロ']],
+    'dl' => ['one' => 'デシリットル', 'other' => 'デシリットル'],
+    'cm' => ['one' => 'センチメートル', 'other' => 'センチメートル', 'aliases' => ['センチ']],
+    'to taste' => ['one' => 'お好みで', 'other' => 'お好みで'],
 ];

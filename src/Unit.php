@@ -17,7 +17,7 @@ use Knppy\Units\Exception\InvalidAmountException;
 final class Unit implements JsonSerializable
 {
     /**
-     * Amount as an integer string, to avoid integer overflow.
+     * Amount as a numeric string, to avoid integer overflow and float errors.
      */
     private readonly string $amount;
 
@@ -63,17 +63,26 @@ final class Unit implements JsonSerializable
     }
 
     /**
-     * @param  int|string  $amount  Whole number, optionally negative.
+     * @param  int|string  $amount  Number with at most $scale decimals, optionally negative.
      * @param  UnitOfMeasurement  $unitOfMeasurement  The unit the amount is expressed in.
+     * @param  int  $scale  Number of decimals the amount can have, 0 for whole numbers. Arithmetic rounds to it.
      *
      * @throws InvalidAmountException
      */
-    public function __construct(int|string $amount, private readonly UnitOfMeasurement $unitOfMeasurement)
+    public function __construct(int|string $amount, private readonly UnitOfMeasurement $unitOfMeasurement, private readonly int $scale = 0)
     {
         $amount = (string) $amount;
 
-        if (! preg_match('/^-?\d+$/', $amount)) {
+        if ($scale < 0) {
+            throw new InvalidAmountException('Scale cannot be negative, got '.$scale.'.');
+        }
+
+        if ($scale === 0 && ! preg_match('/^-?\d+$/', $amount)) {
             throw new InvalidAmountException('Amount must be an integer, got "'.$amount.'".');
+        }
+
+        if ($scale > 0 && ! preg_match('/^-?\d+(\.\d{1,'.$scale.'})?$/', $amount)) {
+            throw new InvalidAmountException('Amount must be a number with at most '.$scale.' decimals, got "'.$amount.'".');
         }
 
         $this->amount = $amount;
@@ -84,7 +93,7 @@ final class Unit implements JsonSerializable
      */
     public function absolute(): self
     {
-        return new self(self::$calculator::absolute($this->amount), $this->unitOfMeasurement);
+        return new self(self::$calculator::absolute($this->amount), $this->unitOfMeasurement, $this->scale);
     }
 
     /**
@@ -95,13 +104,15 @@ final class Unit implements JsonSerializable
     public function add(self ...$addends): self
     {
         $amount = $this->amount;
+        $scale = $this->scale;
 
         foreach ($addends as $addend) {
             $this->assertSameUnitOfMeasurement($addend);
             $amount = self::$calculator::add($amount, $addend->amount);
+            $scale = max($scale, $addend->scale);
         }
 
-        return new self($amount, $this->unitOfMeasurement);
+        return new self($amount, $this->unitOfMeasurement, $scale);
     }
 
     /**
@@ -143,7 +154,7 @@ final class Unit implements JsonSerializable
     }
 
     /**
-     * Divides the amount, rounding the result to a whole number.
+     * Divides the amount, rounding the result to the scale of this unit.
      *
      * @param  int|string  $divisor  Numeric, may be fractional.
      * @param  int  $roundingMode  One of the PHP_ROUND_HALF_* constants.
@@ -155,8 +166,9 @@ final class Unit implements JsonSerializable
         $divisor = self::assertNumeric($divisor);
 
         return new self(
-            self::$calculator::round(self::$calculator::divide($this->amount, $divisor), $roundingMode),
+            self::$calculator::round(self::$calculator::divide($this->amount, $divisor), $roundingMode, $this->scale),
             $this->unitOfMeasurement,
+            $this->scale,
         );
     }
 
@@ -170,11 +182,19 @@ final class Unit implements JsonSerializable
     }
 
     /**
-     * Returns the amount as an integer string.
+     * Returns the amount as a numeric string.
      */
     public function getAmount(): string
     {
         return $this->amount;
+    }
+
+    /**
+     * Returns the number of decimals the amount can have.
+     */
+    public function getScale(): int
+    {
+        return $this->scale;
     }
 
     /**
@@ -255,11 +275,11 @@ final class Unit implements JsonSerializable
     {
         $this->assertSameUnitOfMeasurement($divisor);
 
-        return new self(self::$calculator::mod($this->amount, $divisor->amount), $this->unitOfMeasurement);
+        return new self(self::$calculator::mod($this->amount, $divisor->amount), $this->unitOfMeasurement, max($this->scale, $divisor->scale));
     }
 
     /**
-     * Multiplies the amount, rounding the result to a whole number.
+     * Multiplies the amount, rounding the result to the scale of this unit.
      *
      * @param  int|string  $multiplier  Numeric, may be fractional.
      * @param  int  $roundingMode  One of the PHP_ROUND_HALF_* constants.
@@ -271,8 +291,9 @@ final class Unit implements JsonSerializable
         $multiplier = self::assertNumeric($multiplier);
 
         return new self(
-            self::$calculator::round(self::$calculator::multiply($this->amount, $multiplier), $roundingMode),
+            self::$calculator::round(self::$calculator::multiply($this->amount, $multiplier), $roundingMode, $this->scale),
             $this->unitOfMeasurement,
+            $this->scale,
         );
     }
 
@@ -281,7 +302,7 @@ final class Unit implements JsonSerializable
      */
     public function negative(): self
     {
-        return new self(self::$calculator::subtract('0', $this->amount), $this->unitOfMeasurement);
+        return new self(self::$calculator::subtract('0', $this->amount), $this->unitOfMeasurement, $this->scale);
     }
 
     /**
@@ -292,12 +313,14 @@ final class Unit implements JsonSerializable
     public function subtract(self ...$subtrahends): self
     {
         $amount = $this->amount;
+        $scale = $this->scale;
 
         foreach ($subtrahends as $subtrahend) {
             $this->assertSameUnitOfMeasurement($subtrahend);
             $amount = self::$calculator::subtract($amount, $subtrahend->amount);
+            $scale = max($scale, $subtrahend->scale);
         }
 
-        return new self($amount, $this->unitOfMeasurement);
+        return new self($amount, $this->unitOfMeasurement, $scale);
     }
 }

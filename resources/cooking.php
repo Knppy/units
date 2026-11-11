@@ -5,6 +5,8 @@ use Knppy\Units\Quantity;
 /**
  * Cooking units.
  *
+ * Spoons and cups are US customary here, see cooking-metric.php for the metric kitchen.
+ *
  * Maps each symbol to its name and the quantity it measures. Volumes and masses are US customary and carry an exact
  * ratio: millilitres per unit for volumes, grams per unit for masses. Units without a ratio have no fixed size and
  * cannot be converted.
@@ -22,9 +24,11 @@ return [
     'pt' => ['name' => 'pint', 'quantity' => Quantity::Volume, 'ratio' => '473.176473'],
     'qt' => ['name' => 'quart', 'quantity' => Quantity::Volume, 'ratio' => '946.352946'],
     'gal' => ['name' => 'gallon', 'quantity' => Quantity::Volume, 'ratio' => '3785.411784'],
+    'dl' => ['name' => 'decilitre', 'quantity' => Quantity::Volume, 'ratio' => '100'],
 
     // Mass
     'g' => ['name' => 'gram', 'quantity' => Quantity::Mass, 'ratio' => '1'],
+    'kg' => ['name' => 'kilogram', 'quantity' => Quantity::Mass, 'ratio' => '1000'],
     'oz' => ['name' => 'ounce', 'quantity' => Quantity::Mass, 'ratio' => '28.349523125'],
     'lb' => ['name' => 'pound', 'quantity' => Quantity::Mass, 'ratio' => '453.59237'],
 
@@ -35,6 +39,7 @@ return [
     'drop' => ['name' => 'drop', 'quantity' => Quantity::ImpreciseAmount],
     'splash' => ['name' => 'splash', 'quantity' => Quantity::ImpreciseAmount],
     'handful' => ['name' => 'handful', 'quantity' => Quantity::ImpreciseAmount],
+    'to taste' => ['name' => 'to taste', 'quantity' => Quantity::ImpreciseAmount],
 
     // Counts
     'clove' => ['name' => 'clove', 'quantity' => Quantity::Count],
@@ -45,4 +50,7 @@ return [
     'package' => ['name' => 'package', 'quantity' => Quantity::Count],
     'bunch' => ['name' => 'bunch', 'quantity' => Quantity::Count],
     'sprig' => ['name' => 'sprig', 'quantity' => Quantity::Count],
+
+    // Length
+    'cm' => ['name' => 'centimetre', 'quantity' => Quantity::Length],
 ];
